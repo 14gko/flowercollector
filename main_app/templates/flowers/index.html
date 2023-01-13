@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Cat List</h1>
+
+{% for flower in flowers %}
+  <div class="card">
+    <div class="card-content">
+        <span class="card-title">{{ flower.name }}</span>
+        <p>Family: {{ flower.family }}</p>
+        <p>Color: {{ flower.color }}</p>
+        {% if flower.quantity > 1 %}
+            <p>Quantity: Bouquet of {{ flower.quantity }}</p>
+        {% else %}
+            <p>Quantity: A single {{ flower.name }} </p>
+        {% endif %}
+        <p>Description: {{ flower.description }}</p>
+    </div>
+  </div>
+{% endfor %}
+
+{% endblock %}
