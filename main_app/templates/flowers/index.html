@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Cat List</h1>
+<h1>Flowers List</h1>
 
 {% for flower in flowers %}
   <div class="card">
+    <a href="/flowers/{{ flower.id }}">
     <div class="card-content">
         <span class="card-title">{{ flower.name }}</span>
         <p>Family: {{ flower.family }}</p>
@@ -16,6 +17,7 @@
         {% endif %}
         <p>Description: {{ flower.description }}</p>
     </div>
+    </a>
   </div>
 {% endfor %}
 

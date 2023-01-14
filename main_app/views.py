@@ -11,5 +11,9 @@ def about(request):
     return render(request, 'about.html')
 
 def flowers_index(request):
-    flowers = Flower.objects.all()
+    flowers = Flower.objects.order_by('name')
     return render(request, 'flowers/index.html', { 'flowers': flowers })
+
+def flowers_detail(request, flower_id):
+    flower = Flower.objects.get(id=flower_id)
+    return render(request, 'flowers/detail.html', { 'flower': flower })
