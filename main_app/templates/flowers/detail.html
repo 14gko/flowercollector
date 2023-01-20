@@ -3,18 +3,108 @@
 
 <h1>Flower Details</h1>
 
-<div class="card">
-  <div class="card-content">
-    <span class="card-title">{{ flower.name }}</span>
-    <p>Family: {{ flower.family }}</p>
-    <p>Color: {{ flower.color }}</p>
-    {% if flower.quantity > 1 %}
+<div class="row">
+  <div class="col s6">
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">{{ flower.name }}</span>
+        <p>Family: {{ flower.family }}</p>
+        <p>Color: {{ flower.color }}</p>
+        {% if flower.quantity > 1 %}
         <p>Quantity: Bouquet of {{ flower.quantity }}</p>
-    {% else %}
+        {% else %}
         <p>Quantity: A single {{ flower.name }} </p>
+        {% endif %}
+        <p>Description: {{ flower.description }}</p>
+      </div>
+      <div class="card-action">
+        <a href="{% url 'flowers_update' flower.id %}">Edit</a>
+        <a href="{% url 'flowers_delete' flower.id %}">Delete</a>
+      </div>
+    </div>
+  </div>
+  <div class="col s6">
+    <form action="{% url 'add_watering' flower.id %}" method="POST">
+      {% csrf_token %}
+      {{ watering_form.as_p }}
+      <input type="submit" class="btn" value="Add Watering">
+    </form>
+    <br>
+    {% if flower.watered_today %}
+    <div class="card-panel teal-text center-align">{{flower.name}} is not thirsty</div>
+    {% else %}
+    <div class="card-panel red-text center-align">{{flower.name}} might be thirsty</div>
     {% endif %}
-    <p>Description: {{ flower.description }}</p>
+    <table class="striped">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Watered?</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for watering in flower.watering_set.all %}
+        <tr>
+          <td>{{watering.date}}</td>
+          <td>{{watering.get_watered_display}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </div>
+<hr>
+<div class="row">
+  <div class="col s6">
+    <h3>{{ flower.name }}'s Fertilizers</h3>
+    {% if flower.fertilizers.count %}
+    {% for fert in flower.fertilizers.all %}
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">
+          A {{ fert.type }} {{ fert.name }}
+        </span>
+      </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <h5>{{ flower.name }} is currently using unfertilized soil :(</h5>
+    {% endif %}
+  </div>
+  <div class="col s6">
+    <h3>Available Fertilizers</h3>
+    {% if fertilizers.count %}
+    {% for fert in fertilizers.all %}
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">
+          A {{ fert.type }} {{ fert.name }}
+        </span>
+      </div>
+      <div class="card-action">
+        <form action="{% url 'assoc_fert' flower.id fert.id %}" method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn">Add</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <h5>Your {{flower.name}} currently uses all Fertilizers</h5>
+    {% endif %}
+  </div>
 
-{% endblock %}
+  <script>
+    const dateEl = document.getElementById('id_date');
+    M.Datepicker.init(dateEl, {
+      format: 'yyyy-mm-dd',
+      defaultDate: new Date(),
+      setDefaultDate: true,
+      autoClose: true
+    });
+
+    const selectEl = document.getElementById('id_watered');
+    M.FormSelect.init(selectEl);
+  </script>
+
+  {% endblock %}

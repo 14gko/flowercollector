@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Fertlizers</h1>
+
+{% for fert in fertilizer_list %}
+  <a href="{% url 'fert_detail' fert.id %}">
+    <div class="card">
+        <div class="card-content">
+            <span class="card-title">{{ fert.name }}</span>
+            <p>Type: {{ fert.type }}</p>
+        </div>
+    </div>
+  </a>
+{% endfor %}
+
+{% endblock %}
